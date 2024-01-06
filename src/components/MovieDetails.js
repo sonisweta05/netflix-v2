@@ -1,12 +1,30 @@
 import { useEffect, useState } from "react";
 import { API_OPTIONS, IMG_CDN_URL_WATCHPAGE } from "../utils/constants";
-import { useParams } from "react-router-dom";
-import Recommandations from "./Recommandations";
+import { useParams, useSearchParams } from "react-router-dom";
 import Reviews from "./Reviews";
+import Recommendations from "./Recommandations";
 
 const MovieDetails = () => {
   const URLId = useParams();
   const [movieDesc, setMovieDesc] = useState();
+  const [searchParams] = useSearchParams();
+
+  const videoHandler = () => {
+    console.log(searchParams);
+    return (
+      <div>
+        <iframe
+          width="1000"
+          height="450"
+          src={"https://www.youtube.com/embed/" + searchParams.get("v")}
+          title="YouTube video player"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+        ></iframe>
+      </div>
+    );
+  };
 
   useEffect(() => {
     detailsFromTMDB(URLId);
@@ -42,20 +60,31 @@ const MovieDetails = () => {
               <div className="bg-gray-500 text-white h-auto text-xl p-2 m-2">
                 Release Date - {movieDesc.release_date}
               </div>
-              <div>
-                {movieDesc && (
-                  <div className="m-2 p-2 border border-black">
-                    <div className="font-bold underline text-xl">
-                      {" "}
-                      Genres -{" "}
+              <div className="flex">
+                <div>
+                  {movieDesc && (
+                    <div className="m-2 p-2 border border-black">
+                      <div className="font-bold underline text-xl">
+                        {" "}
+                        Genres -{" "}
+                      </div>
+                      {movieDesc.genres.map((genre, index) => (
+                        <button
+                          key={index}
+                          className="my-4 mx-2 p-3 bg-green-300 border border-black-300 cursor-default"
+                        >
+                          {genre.name}
+                        </button>
+                      ))}
                     </div>
-                    {movieDesc.genres.map((genre,index) => (
-                      <button key={index} className="my-4 mx-2 p-3 bg-green-300 border border-black-300 cursor-default">
-                        {genre.name}
-                      </button>
-                    ))}
-                  </div>
-                )}
+                  )}
+                </div>
+                <div
+                  onClick={videoHandler}
+                  className="bg-green-600 cursor-pointer text-white m-3 text-center py-3 px-3 md:py-9 md:px-8 rounded-lg text-xl hover:bg-opacity-80"
+                >
+                  <button>▶️ Play</button>
+                </div>
               </div>
             </div>
           </div>
@@ -63,7 +92,7 @@ const MovieDetails = () => {
       </div>
 
       <div>
-        <Recommandations />
+        <Recommendations />
       </div>
 
       {movieDesc && (
@@ -77,7 +106,7 @@ const MovieDetails = () => {
           <div className="pl-8">4. Popularity - {movieDesc.popularity}</div>
           <div>
             <div className="pl-8">5. Production Companies - </div>
-            {movieDesc.production_companies.map((company,index) => {
+            {movieDesc.production_companies.map((company, index) => {
               return (
                 <ul key={index} className="pl-[80px] list-disc">
                   <li>

@@ -19,10 +19,8 @@ const Reviews = () => {
 
 
   const handleSelectChange = (event) => {
-    console.log(reviews);
     reviewPerPage = (event.target.value)
     setSlicedReviews(reviews.slice(0,reviewPerPage));
-    console.log(event.target.value);
     setSelectedValue(event.target.value);
   };
   const reviewAPI = async (URLId) => {
@@ -32,7 +30,6 @@ const Reviews = () => {
     );
     const result = await data.json();
     const { results } = result;
-    console.log(results);
     setDropDownLength(Math.ceil(results.length / reviewPerPage));
     setReviews(results);
     setSlicedReviews(results.slice(0,reviewPerPage))
